@@ -1,2 +1,12 @@
 ---
-# handlers file for roles/node_exporter
+- name: systemd reload
+  systemd:
+    name: node_exporter
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+
+- name: reload_prometheus
+  systemd:
+    name: prometheus
+    state: restarted
