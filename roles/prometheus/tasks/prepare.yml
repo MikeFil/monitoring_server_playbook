@@ -1,0 +1,23 @@
+---
+- name: install python-firewall
+  yum:
+    name:  python-firewall
+    state: present
+
+- name: Security Settings For RedHat
+  block:
+    - name: Allow Ports
+      firewalld:
+        port: "{{ item }}"
+        permanent: true
+        state: enabled
+      loop: [ '9090/tcp', '9093/tcp', '9094/tcp', '9100/tcp', '9094/udp' ]
+      notify:
+        - firewalld systemd restart
+
+    - name: Disable SELinux
+      selinux:
+        state: disabled
+
+    - name: Stop SELinux
+      shell: setenforce 0
