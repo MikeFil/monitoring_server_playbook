@@ -1,7 +1,6 @@
 all:
   children:
-    monitoring:
+    centos:
       hosts:
-        appserver:
+        monitoring:
           ansible_host: 192.168.0.58
-#          ansible_python_interpreter: /usr/bin/python
