@@ -2,25 +2,20 @@
 - name: config monitoring server
   become: true
   hosts: monitoring
-  vars:
-    nginx_conf_template: "xpaste_practicum/config/nginx.conf"
-
-  pre_tasks:
-  - name: "add repos"
-    yum:
-      name:
-        - epel-release
-        - centos-release-scl
 
   tasks:
-  - name: "Install nginx"
+  - name: "Install and config Prometheus"
     include_role:
-      name: geerlingguy.nginx
+      name: prometheus
 
-  - name: "Install and config pgsql"
+  - name: "Install and config Node Exporter"
     include_role:
-      name: pgsql
+      name: node_exporter
 
-  - name: "Install and config app"
+  - name: "Install and config EK"
     include_role:
-      name: app_deploy
+      name: ek
+
+  - name: "Install and config fluentbit"
+    include_role:
+      name: fluentbit
