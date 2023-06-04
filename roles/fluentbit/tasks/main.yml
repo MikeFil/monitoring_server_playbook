@@ -1,2 +1,6 @@
 ---
-# tasks file for roles/fluentbit
+- name: Prepare For Install FluentBit
+  include_tasks: tasks/prepare.yml
+
+- name: Install FluentBit
+  include_tasks: tasks/install_fluentbit.yml

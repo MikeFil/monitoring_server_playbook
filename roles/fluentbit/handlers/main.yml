@@ -1,2 +1,6 @@
 ---
-# handlers file for roles/fluentbit
+- name: Restart Fluentbit service
+  systemd:
+    name: td-agent-bit
+    state: reloaded
+    enabled: true

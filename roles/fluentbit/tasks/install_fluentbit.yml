@@ -1,0 +1,14 @@
+---
+- name: Install fluentbit package
+  package:
+    name: td-agent-bit
+    state: present
+    update_cache: true
+  notify: Restart Fluentbit service
+
+- name: Source td-agent-bit main conf
+  template:
+    src: td-agent-bit.conf.j2
+    dest: /etc/td-agent-bit/td-agent-bit.conf
+    mode: 0644
+  notify: Restart Fluentbit service
