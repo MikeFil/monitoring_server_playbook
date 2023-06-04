@@ -1,0 +1,64 @@
+---
+- name: Grab Public Signing Key
+  rpm_key:
+    state: present
+    key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+- name: Add Elastic SW Yum Repo
+  yum_repository:
+    name: Elastic_8.X_repo
+    baseurl: https://artifacts.elastic.co/packages/8.x/yum
+    gpgcheck: true
+    gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    description: Elastic 7.X Repo
+
+- name: Install ElasticSearch and Kibana
+  yum:
+    name:
+      - elasticsearch
+      - kibana
+    update_cache: true
+
+- name: Open Firewall Ports
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    state: enabled
+  loop:
+    - "{{ elastic_port }}/tcp"
+    - "{{ kibana_port }}/tcp"
+
+- name: Configure Listening IP and Port
+  lineinfile:
+    path: "{{ elastic_conf }}"
+    state: present
+    create: yes
+    mode: 0644
+    owner: root
+    group: elasticsearch
+    line: '{{ item }}'
+  loop:
+    - 'network.host: "{{ server_ip }}"'
+    - 'http.port: {{ elastic_port }}'
+    - 'cluster.initial_master_nodes: {{ server_ip }}'
+
+- name: Configure Kibana Host/Port
+  lineinfile:
+    path: "{{ kibana_conf }}"
+    state: present
+    create: yes
+    mode: 0644
+    owner: root
+    group: root
+    line: '{{ item }}'
+  loop:
+    - 'server.host: "{{ server_ip }}"'
+    - 'server.port: {{ kibana_port }}'
+
+- name: Configure Kibana Elastic URL
+  lineinfile:
+    path: "{{ kibana_conf }}"
+    state: present
+    line: 'elasticsearch.hosts: ["http://{{ server_ip }}:{{ elastic_port}}"]'
+  notify:
+    - systemd reload

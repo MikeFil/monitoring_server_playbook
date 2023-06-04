@@ -1,2 +1,5 @@
 ---
-# vars file for roles/ek
+elastic_port: 9200
+kibana_port: 5601
+elastic_conf: "/etc/elasticsearch/elasticsearch.yml"
+server_ip: "localhost"

@@ -1,2 +1,9 @@
 ---
-# handlers file for roles/ek
+- name: systemd reload
+  systemd:
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  loop:
+    - "elasticsearch"
+    - "kibana"
